@@ -7,43 +7,50 @@ public class reinflador {
 
     public static void main(String args[]) {
 
-        String numeroArquivo = "00";
+        for (int i = 0; i < 11; i++) {
 
-        String caminhoArquivo = "/workspaces/Algoritmo_e_Estrutura_de_Dados_II/00-Reinflador/src/main/Entradas/t11_"
-                + numeroArquivo + ".txt";
+            String numeroArquivo = String.format("%02d", i);
 
-        leitorArquivos leitor = new leitorArquivos();
+            String caminhoArquivo = "/workspaces/Algoritmo_e_Estrutura_de_Dados_II/00-Reinflador/src/main/Entradas/t11_"
+                    + numeroArquivo + ".txt";
 
-        Map<Character, String> regras = leitor.ler(caminhoArquivo);
+            leitorArquivos leitor = new leitorArquivos();
 
-        // 1. Descobre a letra inicial
-        char letraInicial = descobrirLetraInicial(regras);
-        System.out.println(numeroArquivo + " A letra raiz (inicial) é: " + letraInicial);
-        System.out.println("--------------------------------------------------");
+            Map<Character, String> regras = leitor.ler(caminhoArquivo);
 
-        // ==========================================================
-        // PARTE 2: CALCULAR O TAMANHO REINFLADO COM UM NOVO MAP
-        // ==========================================================
+            // 1. Descobre a letra inicial
+            char caracterInicial = descobriCaracterInicial(regras);
+            System.out.println(numeroArquivo + " Caracter inicial é: " + caracterInicial);
+            System.out.println("--------------------------------------------------");
 
-        // Criamos o mapa que vai guardar o "valor" (tamanho) de cada letra.
-        // DICA DE OURO: Usamos 'Long' no lugar de 'Integer', porque palavras
-        // que se multiplicam assim crescem de forma absurda e podem estourar o limite
-        // do Integer!
-        Map<Character, Long> tamanhos = new HashMap<>();
+            // ==========================================================
+            // PARTE 2: CALCULAR O TAMANHO REINFLADO COM UM NOVO MAP
+            // ==========================================================
 
-        // Chamamos a função mágica que vai calcular tudo
-        long tamanhoFinal = calcularTamanhoReinflado(letraInicial, regras, tamanhos);
+            // Criamos o mapa que vai guardar o "valor" (tamanho) de cada letra.
+            // DICA DE OURO: Usamos 'Long' no lugar de 'Integer', porque palavras
+            // que se multiplicam assim crescem de forma absurda e podem estourar o limite
+            // do Integer!
+            Map<Character, Long> tamanhos = new HashMap<>();
 
-        System.out.println("Se reinflarmos a letra '" + letraInicial + "', a palavra final terá:");
-        System.out.println(tamanhoFinal + " caracteres no total!");
+            // Chamamos a função mágica que vai calcular tudo
+            long tamanhoFinal = calcularTamanhoReinflado(caracterInicial, regras, tamanhos);
 
-        System.out.println("--------------------------------------------------");
-        System.out.println("Dando uma espiada no Map de tamanhos calculados:");
-        // Mostra o valor calculado que ficou guardado para algumas letras
-        for (Map.Entry<Character, Long> entrada : tamanhos.entrySet()) {
-            System.out
-                    .println("A letra '" + entrada.getKey() + "' sozinha gera " + entrada.getValue() + " caracteres.");
+            System.out.println("Se reinflarmos a letra '" + caracterInicial + "', a palavra final terá:");
+            System.out.println(tamanhoFinal + " caracteres no total!");
+
+            System.out.println("--------------------------------------------------");
+            System.out.println("Dando uma espiada no Map de tamanhos calculados:");
+            // Mostra o valor calculado que ficou guardado para algumas letras
+            for (Map.Entry<Character, Long> entrada : tamanhos.entrySet()) {
+                System.out
+                        .println("A letra '" + entrada.getKey() + "' sozinha gera " + entrada.getValue()
+                                + " caracteres.");
+            }
+            System.out.println("\n\n\n");
+        
         }
+
     }
 
     public static long calcularTamanhoReinflado(char letraAtual, Map<Character, String> regras,
@@ -78,7 +85,7 @@ public class reinflador {
         return tamanhoTotalDessaLetra;
     }
 
-    public static char descobrirLetraInicial(Map<Character, String> regras) {
+    public static char descobriCaracterInicial(Map<Character, String> regras) {
 
         // Pega chave a chave do Map
         for (Character candidata : regras.keySet()) {
