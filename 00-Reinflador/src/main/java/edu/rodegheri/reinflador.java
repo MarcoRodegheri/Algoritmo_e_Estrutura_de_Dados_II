@@ -7,7 +7,7 @@ public class reinflador {
 
     public static void main(String args[]) {
 
-        String numeroArquivo = "10";
+        String numeroArquivo = "00";
 
         String caminhoArquivo = "/workspaces/Algoritmo_e_Estrutura_de_Dados_II/00-Reinflador/src/main/Entradas/t11_" 
                                 + numeroArquivo + ".txt";
