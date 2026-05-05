@@ -9,8 +9,8 @@ public class reinflador {
 
         String numeroArquivo = "00";
 
-        String caminhoArquivo = "/workspaces/Algoritmo_e_Estrutura_de_Dados_II/00-Reinflador/src/main/Entradas/t11_" 
-                                + numeroArquivo + ".txt";
+        String caminhoArquivo = "/workspaces/Algoritmo_e_Estrutura_de_Dados_II/00-Reinflador/src/main/Entradas/t11_"
+                + numeroArquivo + ".txt";
 
         leitorArquivos leitor = new leitorArquivos();
 
@@ -24,77 +24,85 @@ public class reinflador {
         // ==========================================================
         // PARTE 2: CALCULAR O TAMANHO REINFLADO COM UM NOVO MAP
         // ==========================================================
-        
+
         // Criamos o mapa que vai guardar o "valor" (tamanho) de cada letra.
-        // DICA DE OURO: Usamos 'Long' no lugar de 'Integer', porque palavras 
-        // que se multiplicam assim crescem de forma absurda e podem estourar o limite do Integer!
+        // DICA DE OURO: Usamos 'Long' no lugar de 'Integer', porque palavras
+        // que se multiplicam assim crescem de forma absurda e podem estourar o limite
+        // do Integer!
         Map<Character, Long> tamanhos = new HashMap<>();
-        
+
         // Chamamos a função mágica que vai calcular tudo
         long tamanhoFinal = calcularTamanhoReinflado(letraInicial, regras, tamanhos);
-        
+
         System.out.println("Se reinflarmos a letra '" + letraInicial + "', a palavra final terá:");
         System.out.println(tamanhoFinal + " caracteres no total!");
-        
+
         System.out.println("--------------------------------------------------");
         System.out.println("Dando uma espiada no Map de tamanhos calculados:");
         // Mostra o valor calculado que ficou guardado para algumas letras
         for (Map.Entry<Character, Long> entrada : tamanhos.entrySet()) {
-            System.out.println("A letra '" + entrada.getKey() + "' sozinha gera " + entrada.getValue() + " caracteres.");
+            System.out
+                    .println("A letra '" + entrada.getKey() + "' sozinha gera " + entrada.getValue() + " caracteres.");
         }
     }
 
-    // ==========================================================
-    // MÉTODOS AUXILIARES
-    // ==========================================================
+    public static long calcularTamanhoReinflado(char letraAtual, Map<Character, String> regras,
+            Map<Character, Long> tamanhos) {
 
-    // Novo método recursivo que usa o Map para somar os tamanhos
-    public static long calcularTamanhoReinflado(char letraAtual, Map<Character, String> regras, Map<Character, Long> tamanhos) {
-        
-        // 1. O Pulo do Gato: Se a gente JÁ calculou o tamanho dessa letra antes, 
-        // não perdemos tempo. Só pegamos o valor guardado no Map e retornamos!
+        // Verifica se o tamanho da letra está guardado
         if (tamanhos.containsKey(letraAtual)) {
             return tamanhos.get(letraAtual);
         }
 
-        // 2. Pega a regra de substituição dessa letra
+        // Pega o valor do Caracter
         String substituicao = regras.get(letraAtual);
 
-        // 3. Se a regra for vazia (ex: e, z, f), ela é uma letra final que vale 1!
+        // Verifica se a letra é vazia
         if (substituicao == null || substituicao.isEmpty()) {
-            tamanhos.put(letraAtual, 1L); // Guarda no map que essa vale 1
+            tamanhos.put(letraAtual, 1L);
             return 1L;
         }
 
-        // 4. Se ela tem uma string, vamos somar o tamanho de cada letra filha!
         long tamanhoTotalDessaLetra = 0;
-        
-        // Quebra a string de substituição e verifica letra por letra
-        for (char letraFilha : substituicao.toCharArray()) {
-            // A mágica acontece aqui: a função chama ela mesma para descobrir o tamanho do filho
+
+        // Calcula o tamanaho de cada letra filha, e soma total
+        for (int i = 0; i < substituicao.length(); i++) {
+
+            char letraFilha = substituicao.charAt(i);
             tamanhoTotalDessaLetra += calcularTamanhoReinflado(letraFilha, regras, tamanhos);
         }
 
-        // 5. Antes de devolver a resposta, SALVA no map para o futuro!
+        // Salva valor no mapa para não calcular denovo
         tamanhos.put(letraAtual, tamanhoTotalDessaLetra);
 
         return tamanhoTotalDessaLetra;
     }
 
-    // Método para descobrir quem é a letra raiz de tudo (mantido intacto)
     public static char descobrirLetraInicial(Map<Character, String> regras) {
+
+        // Pega chave a chave do Map
         for (Character candidata : regras.keySet()) {
+
             boolean apareceuEmAlgumLugar = false;
+
+            // Pega substituição por substituição do Map, e verifica se a letra candidata
+            // está lá
             for (String substituicao : regras.values()) {
+
+                // Se não estiver, retorna -1
                 if (substituicao.indexOf(candidata) != -1) {
+
                     apareceuEmAlgumLugar = true;
                     break;
                 }
             }
+
+            // Não apareceu, terá valor Falso e Não é vazia, terá valor Falso -> Inverter
+            // para retornar
             if (!apareceuEmAlgumLugar && !regras.get(candidata).isEmpty()) {
                 return candidata;
             }
         }
-        return ' '; 
+        return ' ';
     }
 }
