@@ -7,14 +7,18 @@ public class reinflador {
 
     public static void main(String args[]) {
 
-        String nomeArquivo = "/workspaces/Algoritmo_e_Estrutura_de_Dados_II/00-Reinflador/src/main/java/edu/rodegheri/t11_04.txt";
+        String numeroArquivo = "10";
 
-        LeitorDeArquivos leitor = new LeitorDeArquivos();
-        Map<Character, String> regras = leitor.ler(nomeArquivo);
+        String caminhoArquivo = "/workspaces/Algoritmo_e_Estrutura_de_Dados_II/00-Reinflador/src/main/Entradas/t11_" 
+                                + numeroArquivo + ".txt";
+
+        leitorArquivos leitor = new leitorArquivos();
+
+        Map<Character, String> regras = leitor.ler(caminhoArquivo);
 
         // 1. Descobre a letra inicial
         char letraInicial = descobrirLetraInicial(regras);
-        System.out.println("A letra raiz (inicial) é: " + letraInicial);
+        System.out.println(numeroArquivo + " A letra raiz (inicial) é: " + letraInicial);
         System.out.println("--------------------------------------------------");
 
         // ==========================================================

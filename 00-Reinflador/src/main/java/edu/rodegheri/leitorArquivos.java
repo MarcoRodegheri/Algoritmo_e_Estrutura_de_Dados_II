@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LeitorDeArquivos {
+public class leitorArquivos {
 
     // Método que faz o trabalho de leitura e retorna o Map pronto
     public Map<Character, String> ler(String nomeArquivo) {
