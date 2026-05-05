@@ -1,16 +1,13 @@
 package edu.rodegheri;
 
 /*
-
 a memimomu
 e mimomu
 i mooo
 u mimimi
 o // Opcional! Podia não estar aqui!
 m // Opcional! Podia não estar aqui!
-
 */
-
 
 import java.io.BufferedReader;
 import java.io.FileReader;
