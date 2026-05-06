@@ -9,43 +9,34 @@ public class reinflador {
 
         for (int i = 0; i < 11; i++) {
 
+            // Le arquivo por arquivo
             String numeroArquivo = String.format("%02d", i);
 
             String caminhoArquivo = "/workspaces/Algoritmo_e_Estrutura_de_Dados_II/00-Reinflador/src/main/Entradas/t11_"
-                    + numeroArquivo + ".txt";
+                   + numeroArquivo + ".txt";
 
             leitorArquivos leitor = new leitorArquivos();
 
-            Map<Character, String> regras = leitor.ler(caminhoArquivo);
+            Map<Character, String> dicEntradas = leitor.ler(caminhoArquivo);
 
-            // 1. Descobre a letra inicial
-            char caracterInicial = descobriCaracterInicial(regras);
-            System.out.println(numeroArquivo + " Caracter inicial é: " + caracterInicial);
-            System.out.println("--------------------------------------------------");
+            // Descobre o caracter inicial
+            char caracterInicial = descobriCaracterInicial(dicEntradas);
 
-            // ==========================================================
-            // PARTE 2: CALCULAR O TAMANHO REINFLADO COM UM NOVO MAP
-            // ==========================================================
+            System.out.println("Entrada " + numeroArquivo + " - Caracter inicial é: " + caracterInicial);
+            
 
-            // Criamos o mapa que vai guardar o "valor" (tamanho) de cada letra.
-            // DICA DE OURO: Usamos 'Long' no lugar de 'Integer', porque palavras
-            // que se multiplicam assim crescem de forma absurda e podem estourar o limite
-            // do Integer!
-            Map<Character, Long> tamanhos = new HashMap<>();
+            // Quantidade de carateres finais
+            Map<Character, Long> dicTamannhos = new HashMap<>();
 
-            // Chamamos a função mágica que vai calcular tudo
-            long tamanhoFinal = calcularTamanhoReinflado(caracterInicial, regras, tamanhos);
+            long tamanhoFinal = calcularTamanhoReinflado(caracterInicial, dicEntradas, dicTamannhos);
 
-            System.out.println("Se reinflarmos a letra '" + caracterInicial + "', a palavra final terá:");
-            System.out.println(tamanhoFinal + " caracteres no total!");
+            System.out.println(tamanhoFinal + " caracteres no total\n");
 
-            System.out.println("--------------------------------------------------");
-            System.out.println("Dando uma espiada no Map de tamanhos calculados:");
-            // Mostra o valor calculado que ficou guardado para algumas letras
-            for (Map.Entry<Character, Long> entrada : tamanhos.entrySet()) {
+            // Valor de cara caracter
+            for (Map.Entry<Character, Long> caracter : dicTamannhos.entrySet()) {
                 System.out
-                        .println("A letra '" + entrada.getKey() + "' sozinha gera " + entrada.getValue()
-                                + " caracteres.");
+                        .println(caracter.getKey() + " = " + caracter.getValue()
+                                + " caracteres");
             }
             System.out.println("\n\n\n");
         
@@ -53,20 +44,20 @@ public class reinflador {
 
     }
 
-    public static long calcularTamanhoReinflado(char letraAtual, Map<Character, String> regras,
-            Map<Character, Long> tamanhos) {
+    public static long calcularTamanhoReinflado(char letraAtual, Map<Character, String> dicEntradas,
+            Map<Character, Long> dicTamannhos) {
 
         // Verifica se o tamanho da letra está guardado
-        if (tamanhos.containsKey(letraAtual)) {
-            return tamanhos.get(letraAtual);
+        if (dicTamannhos.containsKey(letraAtual)) {
+            return dicTamannhos.get(letraAtual);
         }
 
         // Pega o valor do Caracter
-        String substituicao = regras.get(letraAtual);
+        String substituicao = dicEntradas.get(letraAtual);
 
         // Verifica se a letra é vazia
         if (substituicao == null || substituicao.isEmpty()) {
-            tamanhos.put(letraAtual, 1L);
+            dicTamannhos.put(letraAtual, 1L);
             return 1L;
         }
 
@@ -76,25 +67,25 @@ public class reinflador {
         for (int i = 0; i < substituicao.length(); i++) {
 
             char letraFilha = substituicao.charAt(i);
-            tamanhoTotalDessaLetra += calcularTamanhoReinflado(letraFilha, regras, tamanhos);
+            tamanhoTotalDessaLetra += calcularTamanhoReinflado(letraFilha, dicEntradas, dicTamannhos);
         }
 
         // Salva valor no mapa para não calcular denovo
-        tamanhos.put(letraAtual, tamanhoTotalDessaLetra);
+        dicTamannhos.put(letraAtual, tamanhoTotalDessaLetra);
 
         return tamanhoTotalDessaLetra;
     }
 
-    public static char descobriCaracterInicial(Map<Character, String> regras) {
+    public static char descobriCaracterInicial(Map<Character, String> dicEntradas) {
 
         // Pega chave a chave do Map
-        for (Character candidata : regras.keySet()) {
+        for (Character candidata : dicEntradas.keySet()) {
 
             boolean apareceuEmAlgumLugar = false;
 
             // Pega substituição por substituição do Map, e verifica se a letra candidata
             // está lá
-            for (String substituicao : regras.values()) {
+            for (String substituicao : dicEntradas.values()) {
 
                 // Se não estiver, retorna -1
                 if (substituicao.indexOf(candidata) != -1) {
@@ -104,9 +95,8 @@ public class reinflador {
                 }
             }
 
-            // Não apareceu, terá valor Falso e Não é vazia, terá valor Falso -> Inverter
-            // para retornar
-            if (!apareceuEmAlgumLugar && !regras.get(candidata).isEmpty()) {
+            // Não apareceu, terá valor Falso e Não é vazia, terá valor Falso -> tem de retornar
+            if (!apareceuEmAlgumLugar && !dicEntradas.get(candidata).isEmpty()) {
                 return candidata;
             }
         }
