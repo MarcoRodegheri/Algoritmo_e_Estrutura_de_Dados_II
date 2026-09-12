@@ -2,7 +2,7 @@
 
 # Reinflador Quântico Redundante
 
-### Trabalho 1 da disciplina de Algoritmos e Estrutura de Dados II (PUCRS)
+### Trabalho da disciplina de Algoritmos e Estrutura de Dados II (PUCRS)
 
 ![Java](https://img.shields.io/badge/Java_21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
