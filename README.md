@@ -1,29 +1,82 @@
-# Desenvolvimento Java 25 / Python / C++
-- Repositório base para uso em disciplinas de desenvolvimento de software
-- Configurado para desenvolvimento em Java25, Python 3.13 e GCC/G++
-- Pensado para ser usado como "Monorepo" para uma série de projetos de aula
-- As instruções a seguir referem-se ao uso deste repositório em conjunto com o CodeSpaces
+<div align="center">
 
-## Criação de Projetos Java
-O script **create-java-project.sh** cria um projeto Maven/Java básico para ser usado em disciplinas de algoritmos e programação
-- Para criar um projeto usando o script use o comando: `./create-java-project.sh br.pucrs meu-projeto`
-- Para compilar e executar o projeto use as opções do VSCode, ou o terminal
-  * Pelo terminal, compile e execute o projeto com:
-    - ``mvn compile``
-    - ``mvn exec:java -Dexec.mainClass="br.pucrs.App"``
+# Reinflador Quântico Redundante
 
-## Criação de Projetos Python
-O script **create-python-project.sh** cria um projeto Python3 para ser usado em disciplinas de algoritmos e programação
-- Para criar um projeto usando o script use o comando: `./create-python-project.sh meu-projeto`
-- O projeto é criado utilizando o [uv](https://docs.astral.sh/uv/), uma ferramenta moderna para gerenciamento de pacotes e projetos Python (substitui com vantagens o ``pip``)
-- Para compilar e executar o projeto use as opções do VSCode, ou o terminal
-  * Pelo terminal, execute o projeto com ``uv run main.py`` - esse comando instala a versão mais nova de Python, se necessário, e executa o seu programa com ela
+### Trabalho 1 da disciplina de Algoritmos e Estrutura de Dados II (PUCRS)
 
-## Criação de Projetos C++
-O script **create-cpp-project.sh** cria um projeto C++ para ser usado em disciplinas de algoritmos e programação
-- Para criar um projeto usando o script use o comando: `./create-cpp-project.sh meu-projeto`
-- O projeto é criado utilizando o [CMake](https://cmake.org/), uma ferramenta moderna e eficiente para gerenciamento de projetos com vários módulos e dependências (alternativa ao ``Makefile`` criado manualmente)
-- Antes de tentar compilar um projeto criado com esse script, execute os seguintes comandos no terminal:
-   * ``sudo apt-get update``
-   * ``sudo apt-get install cmake``
-- Para compilar e executar o projeto use as opções do VSCode, ou o terminal
+![Java](https://img.shields.io/badge/Java_21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
+![JUnit5](https://img.shields.io/badge/JUnit_5-25A162?style=for-the-badge&logo=junit5&logoColor=white)
+
+</div>
+
+---
+
+## Sobre o projeto
+
+Programa em **Java** desenvolvido como trabalho da disciplina de **Algoritmos e Estrutura de Dados II (PUCRS)**. O problema simula a descompressão de um "reinflador de textos": cada letra do alfabeto possui uma regra de substituição por uma sequência de outras letras, e essas substituições se aplicam recursivamente até não haver mais nada a substituir — como uma gramática de expansão (semelhante a um L-system). Uma entrada de poucos bytes pode gerar um texto final com trilhões de caracteres.
+
+Dado um conjunto de regras, o programa precisa:
+1. Descobrir qual letra é a **raiz** da expansão (a letra que nunca é usada como substituição de nenhuma outra, mas possui uma regra própria).
+2. Calcular **quantos caracteres** o texto final teria, sem precisar gerar essa string explicitamente — o que seria inviável para entradas grandes (algumas entradas de teste geram mais de 10¹⁶ caracteres).
+
+## Como funciona
+
+- **Leitura das regras** — cada linha do arquivo de entrada é lida no formato `letra substituição`, montando um `HashMap<Character, String>` com a regra de expansão de cada letra. Optou-se por `HashMap` em vez de `TreeMap`: como o hashing de caracteres ASCII minúsculos já preserva a ordem alfabética na prática, o `HashMap` entrega os dados na mesma ordem com menor custo computacional.
+- **Descoberta da letra raiz** — percorre todas as letras candidatas e verifica, para cada uma, se ela aparece dentro de alguma substituição das demais. A que nunca aparece (e possui uma regra não vazia) é a raiz.
+- **Cálculo do tamanho final** — em vez de expandir a string de verdade, o tamanho de cada letra é calculado por **recursão com memoização**: o tamanho de uma letra é a soma dos tamanhos de cada letra da sua substituição, e cada resultado já calculado é guardado em um mapa para nunca ser recalculado — mesma lógica de percorrer subárvores usada em problemas de árvores binárias.
+
+## Complexidade
+
+| Etapa | Complexidade | Motivo |
+|---|---|---|
+| Leitura de arquivos | O(N) | percorre o arquivo linha a linha uma única vez |
+| Descoberta da letra raiz | O(N²) | para cada letra candidata, verifica sua presença em todas as demais substituições |
+| Cálculo do tamanho final | O(N) | cada letra tem seu tamanho calculado uma única vez, graças à memoização |
+| Programa completo (por entrada) | O(N²) | dominado pela etapa de descoberta da letra raiz |
+
+*N = número de caracteres nas regras de entrada.*
+
+## Dificuldades encontradas
+
+- O uso inicial de `int` para acumular o tamanho final causava overflow silencioso (valores chegando a `-2.147.483.648`) — resolvido trocando para `long`.
+- Definir a recursão do cálculo de tamanho exigiu pensar no problema como uma árvore: resolver completamente uma letra (todos os seus "filhos") antes de somar o resultado e seguir para a próxima.
+
+## Resultados
+
+O programa processa 11 arquivos de teste, cada um com uma letra inicial e um conjunto de regras diferentes. Os resultados variam de dezenas de caracteres até mais de **10¹⁶ caracteres** nas entradas mais densas — evidenciando o crescimento explosivo típico de gramáticas de expansão. A tabela completa por entrada e por letra está disponível no relatório do trabalho.
+
+## Estrutura do projeto
+
+```
+00-Reinflador/
+├── pom.xml
+├── relatorio.pdf                      # Relatório completo do trabalho
+└── src/
+    ├── main/
+    │   ├── java/edu/rodegheri/
+    │   │   ├── reinflador.java        # Lógica principal (raiz + cálculo de tamanho)
+    │   │   └── leitorArquivos.java    # Parser dos arquivos de entrada
+    │   └── Entradas/                  # Casos de teste fornecidos pela disciplina
+    │       └── t11_00.txt ... t11_10.txt
+    └── test/
+        └── java/edu/rodegheri/AppTest.java
+```
+
+## Como rodar
+
+```bash
+mvn compile
+mvn exec:java -Dexec.mainClass="edu.rodegheri.reinflador"
+```
+
+## Como rodar os testes
+
+```bash
+mvn test
+```
+
+## Autores
+
+- Marco Antônio De Carli Rodegheri
+- Luiz Confortin
