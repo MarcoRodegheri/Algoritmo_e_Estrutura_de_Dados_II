@@ -69,12 +69,6 @@ mvn compile
 mvn exec:java -Dexec.mainClass="edu.rodegheri.reinflador"
 ```
 
-## Como rodar os testes
-
-```bash
-mvn test
-```
-
 ## Autores
 
 - Marco Antônio De Carli Rodegheri
